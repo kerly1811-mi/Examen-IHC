@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { TestPlan, TestTask } from '../models/types';
-import { Plus, Trash2, CheckCircle, RefreshCcw, Check, X, Info } from 'lucide-react';
+import { Plus, Trash2, Info } from 'lucide-react';
 import AutoGrowTextarea from '../components/AutoGrowTextarea';
 import { FieldWarning } from '../components/FieldWarning';
 import { CharCounter } from '../components/CharCounter';
 import { fieldClass } from '../components/validation';
 import { MAX_CHARS, clamp, validateDate } from '../components/validation';
 import { Tooltip } from '../components/Tooltip';
+import { SaveTimestamp } from '../components/SaveTimestamp';
+import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 
 function useWindowWidth() {
   const [width, setWidth] = useState(() => window.innerWidth);
@@ -35,9 +37,8 @@ const TaskCard: React.FC<{
   task: TestTask;
   handleTaskChange: (id: string, updates: Partial<TestTask>) => void;
   onSaveTask: (id: string, updates: Partial<TestTask>) => void;
-  onDeleteTask: (id: string) => void;
-}> = ({ task, handleTaskChange, onSaveTask, onDeleteTask }) => {
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  onRequestDelete: (task: TestTask) => void;
+}> = ({ task, handleTaskChange, onSaveTask, onRequestDelete }) => {
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
   const touch = (f: string) => setTouchedFields(prev => ({ ...prev, [f]: true }));
 
@@ -51,15 +52,14 @@ const TaskCard: React.FC<{
     <article className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm" aria-label={`Tarea ${task.task_index}`}>
       <div className="bg-navy px-4 py-2 flex justify-between items-center text-white">
         <span className="font-bold text-sm">Tarea {task.task_index}</span>
-        {confirmDelete ? (
-          <div className="flex gap-2 items-center animate-in zoom-in-95 duration-200">
-            <span className="text-sm text-red-300 font-black uppercase tracking-widest">¿Eliminar?</span>
-            <button type="button" onClick={() => { onDeleteTask(task.id!); setConfirmDelete(false); }} className="inline-flex items-center justify-center w-7 h-7 bg-red-600 text-white border-none rounded-md cursor-pointer transition-all hover:bg-red-700" aria-label={`Confirmar eliminación de ${task.task_index}`}><Check size={16} strokeWidth={3} aria-hidden="true" /></button>
-            <button type="button" onClick={() => setConfirmDelete(false)} className="inline-flex items-center justify-center w-7 h-7 bg-white/10 text-white border-none rounded-md cursor-pointer transition-all hover:bg-white/20" aria-label="Cancelar eliminación"><X size={16} strokeWidth={3} aria-hidden="true" /></button>
-          </div>
-        ) : (
-          <button type="button" className="bg-transparent border-none text-red-300 p-1 cursor-pointer transition-colors hover:text-red-500" onClick={() => setConfirmDelete(true)} aria-label={`Eliminar ${task.task_index || 'tarea'}`}><Trash2 size={16} aria-hidden="true" /></button>
-        )}
+        <button
+          type="button"
+          className="bg-transparent border-none text-red-300 p-1 cursor-pointer transition-colors hover:text-red-400"
+          onClick={() => onRequestDelete(task)}
+          aria-label={`Eliminar ${task.task_index || 'tarea'}`}
+        >
+          <Trash2 size={16} aria-hidden="true" />
+        </button>
       </div>
 
       <div className="p-4 flex flex-col gap-4">
@@ -114,9 +114,8 @@ const TaskRow: React.FC<{
   task: TestTask;
   handleTaskChange: (id: string, updates: Partial<TestTask>) => void;
   onSaveTask: (id: string, updates: Partial<TestTask>) => void;
-  onDeleteTask: (id: string) => void;
-}> = ({ task, handleTaskChange, onSaveTask, onDeleteTask }) => {
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  onRequestDelete: (task: TestTask) => void;
+}> = ({ task, handleTaskChange, onSaveTask, onRequestDelete }) => {
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
   const touch = (f: string) => setTouchedFields(prev => ({ ...prev, [f]: true }));
   const warnScenario = touchedFields.scenario && (!task.scenario || task.scenario.trim() === '');
@@ -170,14 +169,14 @@ const TaskRow: React.FC<{
         <CharCounter value={task.success_criteria} />
       </td>
       <td className="p-3 text-center">
-        {confirmDelete ? (
-          <div className="flex flex-col gap-1 items-center animate-in zoom-in-95 duration-200">
-            <button type="button" onClick={() => { onDeleteTask(task.id!); setConfirmDelete(false); }} className="bg-red-600 text-white border-none rounded-md w-7 h-7 flex items-center justify-center cursor-pointer transition-all hover:bg-red-700 shadow-sm" aria-label={`Confirmar eliminación de ${task.task_index || 'tarea'}`}><Check size={16} strokeWidth={3} aria-hidden="true" /></button>
-            <button type="button" onClick={() => setConfirmDelete(false)} className="bg-slate-200 text-slate-600 border-none rounded-md w-7 h-7 flex items-center justify-center cursor-pointer transition-all hover:bg-slate-300 shadow-sm" aria-label="Cancelar eliminación"><X size={16} strokeWidth={3} aria-hidden="true" /></button>
-          </div>
-        ) : (
-          <button className="bg-transparent border-none text-slate-300 p-2 cursor-pointer transition-all hover:bg-red-50 hover:text-red-500 rounded-lg" onClick={() => setConfirmDelete(true)} type="button" aria-label={`Eliminar ${task.task_index || 'tarea'}`}><Trash2 size={18} aria-hidden="true" /></button>
-        )}
+        <button
+          className="bg-transparent border-none text-slate-300 p-2 cursor-pointer transition-all hover:bg-red-50 hover:text-red-500 rounded-lg"
+          onClick={() => onRequestDelete(task)}
+          type="button"
+          aria-label={`Eliminar ${task.task_index || 'tarea'}`}
+        >
+          <Trash2 size={18} aria-hidden="true" />
+        </button>
       </td>
     </tr>
   );
@@ -188,6 +187,8 @@ export const PlanView: React.FC<PlanViewProps> = ({
 }) => {
   const [localPlan, setLocalPlan] = useState<TestPlan>(data);
   const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TestTask | null>(null);
   const width = useWindowWidth();
   const isMobile = width < 1024;
 
@@ -197,7 +198,10 @@ export const PlanView: React.FC<PlanViewProps> = ({
     setIsSaving(true);
     const updatedPlan = { ...localPlan, ...fieldUpdates };
     onUpdate(updatedPlan);
-    setTimeout(() => setIsSaving(false), 800);
+    setTimeout(() => {
+      setIsSaving(false);
+      setLastSaved(new Date());
+    }, 800);
   };
 
   const handleChange = (updates: Partial<TestPlan>) => {
@@ -265,16 +269,8 @@ export const PlanView: React.FC<PlanViewProps> = ({
         <h2 className="text-lg md:text-xl font-black m-0 text-center flex-1 text-white uppercase tracking-widest">
           Planificación del Test
         </h2>
-        <div className="flex-1 flex justify-end items-center gap-2 text-sm font-bold opacity-90 text-right" aria-live="polite" aria-atomic="true">
-          {isSaving ? (
-            <span className="flex items-center gap-1.5 text-white animate-pulse">
-              <RefreshCcw size={16} className="animate-spin" aria-hidden="true" /> Guardando...
-            </span>
-          ) : (
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <CheckCircle size={16} aria-hidden="true" /> Cambios guardados
-            </span>
-          )}
+        <div className="flex-1 flex justify-end items-center" aria-live="polite" aria-atomic="true">
+          <SaveTimestamp lastSaved={lastSaved} isSaving={isSaving} />
         </div>
       </header>
 
@@ -497,7 +493,7 @@ export const PlanView: React.FC<PlanViewProps> = ({
                 <p className="text-center text-slate-500 py-8 italic font-medium text-sm">No hay tareas añadidas.</p>
               ) : (
                 tasks.map((task) => (
-                  <TaskCard key={task.id} task={task} handleTaskChange={handleTaskChange} onSaveTask={onSaveTask} onDeleteTask={onDeleteTask} />
+                  <TaskCard key={task.id} task={task} handleTaskChange={handleTaskChange} onSaveTask={onSaveTask} onRequestDelete={setDeleteTarget} />
                 ))
               )}
               <button type="button"
@@ -525,7 +521,7 @@ export const PlanView: React.FC<PlanViewProps> = ({
                   <tbody className="divide-y divide-slate-100">
                     {tasks.length > 0 ? (
                       tasks.map((task) => (
-                        <TaskRow key={task.id} task={task} handleTaskChange={handleTaskChange} onSaveTask={onSaveTask} onDeleteTask={onDeleteTask} />
+                        <TaskRow key={task.id} task={task} handleTaskChange={handleTaskChange} onSaveTask={onSaveTask} onRequestDelete={setDeleteTarget} />
                       ))
                     ) : (
                       <tr><td colSpan={6} className="p-12 text-center text-slate-500 italic text-sm">No hay tareas añadidas.</td></tr>
@@ -619,6 +615,17 @@ export const PlanView: React.FC<PlanViewProps> = ({
         </section>
 
       </div>
+
+      <ConfirmDeleteModal
+        isOpen={deleteTarget !== null}
+        taskIndex={deleteTarget?.task_index ?? ''}
+        taskScenario={deleteTarget?.scenario}
+        onConfirm={() => {
+          if (deleteTarget?.id) onDeleteTask(deleteTarget.id);
+          setDeleteTarget(null);
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </main>
   );
 };
