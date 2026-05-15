@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Lo-Fi - PlanView</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background: #fff; padding: 30px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 40px; color: #333; font-size: 24px; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+        @media (max-width: 900px) { .comparison { grid-template-columns: 1fr; } }
+        .wireframe { border: 2px solid #000; padding: 20px; background: #fafafa; }
+        .wireframe-title { background: #333; color: #fff; padding: 10px; margin: -20px -20px 20px -20px; font-weight: bold; text-align: center; }
+        .box { border: 1px solid #666; margin: 12px 0; padding: 12px; background: #fff; min-height: 30px; display: flex; align-items: center; }
+        .box-label { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .box-placeholder { color: #999; font-size: 12px; }
+        .section-label { font-weight: bold; color: #000; font-size: 12px; margin-top: 15px; margin-bottom: 8px; background: #e0e0e0; padding: 6px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        .button { border: 1px solid #000; padding: 8px 12px; background: #fff; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .button:hover { background: #f0f0f0; }
+        .note { background: #ffebee; border-left: 4px solid #c62828; padding: 10px; margin: 15px 0; font-size: 11px; }
+        .improvement { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 10px; margin: 15px 0; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lo-Fi Wireframe: PlanView</h1>
+        
+        <div class="comparison">
+            <!-- ACTUAL -->
+            <div>
+                <div class="wireframe">
+                    <div class="wireframe-title">ACTUAL</div>
+                    
+                    <!-- Header -->
+                    <div class="box">
+                        <div class="box-placeholder">[HEADER - LOGO + NAV]</div>
+                    </div>
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="box-label">Breadcrumbs</div>
+                    <div class="box">
+                        <div class="box-placeholder">🏠 › Mis Planes › Test V3</div>
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div class="box-label">Progreso</div>
+                    <div class="box">
+                        <div class="box-placeholder">[████░░░░░░░░░] 60%</div>
+                    </div>
+                    
+                    <!-- Stepper -->
+                    <div class="box-label">Pasos</div>
+                    <div class="box">
+                        <div class="box-placeholder">① ② ③ ④ ⑤</div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="box-label">Tabs</div>
+                    <div class="box">
+                        <div class="box-placeholder">[Plan] [Guion] [Obs] [Hall] [Reportes]</div>
+                    </div>
+                    
+                    <!-- Form Section -->
+                    <div class="section-label">INFORMACIÓN DEL PLAN</div>
+                    
+                    <div class="box-label">Producto *</div>
+                    <div class="box">
+                        <div class="box-placeholder">[_____________________]</div>
+                    </div>
+                    
+                    <div class="box-label">Objetivo</div>
+                    <div class="box">
+                        <div class="box-placeholder">[_____________________]</div>
+                    </div>
+                    
+                    <!-- Tasks -->
+                    <div class="section-label">TAREAS</div>
+                    
+                    <div class="box-label">Tarea 1</div>
+                    <div class="box">
+                        <div class="box-placeholder">[Header] ... [🗑]</div>
+                    </div>
+                    
+                    <div class="box-label">Escenario *</div>
+                    <div class="box">
+                        <div class="box-placeholder">[_____________________]</div>
+                    </div>
+                    
+                    <div class="box-label">Feedback</div>
+                    <div class="box" style="min-height: 20px;">
+                        <div class="box-placeholder">⚠ Campo requerido</div>
+                    </div>
+                    
+                    <!-- Problems -->
+                    <div class="note">
+                        ❌ PROBLEMAS:<br>
+                        • Sin validación tiempo real<br>
+                        • Sin timestamp guardado<br>
+                        • Modal débil<br>
+                        • Sin tooltips
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="button">← Atrás</button>
+                        <button class="button">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MEJORADO -->
+            <div>
+                <div class="wireframe">
+                    <div class="wireframe-title">MEJORADO</div>
+                    
+                    <!-- Header -->
+                    <div class="box">
+                        <div class="box-placeholder">[HEADER - LOGO + NAV]</div>
+                    </div>
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="box-label">Breadcrumbs ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">🏠 › Mis Planes › Test V3</div>
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div class="box-label">Progreso + Contexto ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">[████░░░░░░░░░] 60% (Paso: Guion)</div>
+                    </div>
+                    
+                    <!-- Stepper -->
+                    <div class="box-label">Pasos Mejorados ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">①✓ ②● ③ ④ ⑤  [tooltip: "paso 2 de 5"]</div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="box-label">Tabs + Guardar ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">[Plan] [Guion*] [Obs] [Hall] [Reportes] [💾 Guardar]</div>
+                    </div>
+                    
+                    <!-- Form Section -->
+                    <div class="section-label">INFORMACIÓN DEL PLAN</div>
+                    
+                    <div class="box-label">Producto * [Validación INLINE] ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">[___________________] ✓ Válido</div>
+                    </div>
+                    <div class="box" style="min-height: 20px; background: #f0fff4; border-color: #28a745;">
+                        <div class="box-placeholder">✓ Guardado hace 30s</div>
+                    </div>
+                    
+                    <div class="box-label">Objetivo [Estado Real-time] ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">[___________________] ⚠ Requerido</div>
+                    </div>
+                    
+                    <!-- Tasks -->
+                    <div class="section-label">TAREAS [Estados Visuales] ✓</div>
+                    
+                    <div class="box-label">Tarea 1 (●) En Curso</div>
+                    <div class="box">
+                        <div class="box-placeholder">[Header●] ... [🗑 tooltip: "Eliminar"]</div>
+                    </div>
+                    
+                    <div class="box-label">Escenario * [Real-time] ✓</div>
+                    <div class="box">
+                        <div class="box-placeholder">[___________________] (95/200) ✓</div>
+                    </div>
+                    
+                    <div class="box-label">Feedback + Timestamp ✓</div>
+                    <div class="box" style="min-height: 20px; background: #f0fff4; border-color: #28a745;">
+                        <div class="box-placeholder">✓ Válido | Guardado hace 1 min</div>
+                    </div>
+                    
+                    <!-- Modal Preview -->
+                    <div class="box-label">Modal Eliminación [Robusto] ✓</div>
+                    <div class="box" style="min-height: 60px;">
+                        <div class="box-placeholder">
+                            ┌──────────────────────┐<br>
+                            │ ¿Eliminar Tarea 1?   │<br>
+                            │ "El usuario intenta" │<br>
+                            │ ⚠ No se puede deshacer│<br>
+                            │ [Cancelar] [Eliminar]│<br>
+                            └──────────────────────┘
+                        </div>
+                    </div>
+                    
+                    <!-- Improvements -->
+                    <div class="improvement">
+                        ✓ MEJORAS:<br>
+                        • Validación tiempo real<br>
+                        • Timestamps visibles<br>
+                        • Modal robusto<br>
+                        • Tooltips + contadores<br>
+                        • Estados claros (●✓⚠○)
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="button">← Atrás</button>
+                        <button class="button">+ Agregar Tarea</button>
+                        <button class="button">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

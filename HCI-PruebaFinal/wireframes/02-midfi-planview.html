@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Mid-Fi - PlanView Estructura</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; color: #333; }
+        .section-group { background: white; margin-bottom: 30px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .section-header { background: #003366; color: white; padding: 15px 20px; font-weight: bold; font-size: 16px; }
+        .section-content { padding: 30px; }
+        .subsection { margin-bottom: 25px; }
+        .subsection-title { font-weight: bold; color: #003366; margin-bottom: 15px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e0e0e0; }
+        .box { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 15px; }
+        .box-title { font-weight: bold; color: #333; margin-bottom: 10px; font-size: 12px; }
+        .element { background: white; padding: 10px; border: 1px dashed #bbb; border-radius: 4px; margin-bottom: 8px; font-size: 12px; }
+        .proximity-box { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 12px; margin: 10px 0; border-radius: 4px; }
+        .hierarchy-example { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .h-level { padding: 12px; border-radius: 4px; text-align: center; font-size: 11px; font-weight: bold; color: white; }
+        .h1 { background: #003366; }
+        .h2 { background: #0066cc; }
+        .h3 { background: #4d94ff; }
+        .h4 { background: #99bbff; color: #333; }
+        .gestalt { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 12px; }
+        .validation-flow { background: #f0f0f0; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 11px; line-height: 1.8; }
+        .step-flow { background: white; padding: 10px; border-left: 4px solid #0066cc; margin: 8px 0; border-radius: 3px; }
+        .note { background: #e3f2fd; border-left: 4px solid #2196F3; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mid-Fi: PlanView - Estructura y Principios HCI</h1>
+        
+        <!-- REGIÓN 1 -->
+        <div class="section-group">
+            <div class="section-header">1. REGIÓN SUPERIOR: Header + Navegación</div>
+            <div class="section-content">
+                <div class="subsection">
+                    <div class="subsection-title">Breadcrumbs (Navegación Contextual)</div>
+                    <div class="box">
+                        <div class="element">🏠 › Mis Planes › Test Usabilidad V3</div>
+                        <div class="element" style="background: #f0f0f0; font-size: 10px;">Implementación: useNavigate() de React Router</div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <div class="subsection-title">FlowProgress (5 Pasos Numerados)</div>
+                    <div class="box">
+                        <div class="element">① Plan ② Guion ③ Obs ④ Hall ⑤ Reportes</div>
+                        <div class="element">60% Completado</div>
+                        <div class="element" style="background: #f0f0f0; font-size: 10px;">Nielsen #1: Visibilidad del estado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- REGIÓN 2 -->
+        <div class="section-group">
+            <div class="section-header">2. REGIÓN CONTENIDO: Formularios + Tareas</div>
+            <div class="section-content">
+                <div class="subsection">
+                    <div class="subsection-title">Sección: Información del Plan</div>
+                    <div class="proximity-box">
+                        <strong>Ley de Proximidad (Gestalt):</strong> Campos relacionados separados por gap-4 (16px)
+                    </div>
+                    <div class="box">
+                        <div class="element">Producto [input]</div>
+                        <div class="element">Objetivo [input]</div>
+                        <div class="element">Moderador [input]</div>
+                        <div class="element" style="background: #f0f0f0; font-size: 10px;">Cada campo: Label (uppercase) + Input + Feedback</div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <div class="subsection-title">Sección: Tareas (Repetición)</div>
+                    <div class="proximity-box">
+                        <strong>Ley de Proximidad:</strong> Cada TaskCard separado por gap-4. Campos internos por gap-3.
+                    </div>
+                    <div class="box">
+                        <div class="box-title">TaskCard 1</div>
+                        <div class="element">Header: Nombre + Status + Delete</div>
+                        <div class="element">Body: Campos + Validación + Timestamp</div>
+                        <div class="element" style="background: #f0f0f0; font-size: 10px;">Src: src/views/PlanView.tsx línea 34-180</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- JERARQUÍA VISUAL -->
+        <div class="section-group">
+            <div class="section-header">3. JERARQUÍA VISUAL (Atención Pre-atentiva)</div>
+            <div class="section-content">
+                <div class="subsection">
+                    <div class="subsection-title">Niveles de Importancia</div>
+                    <div class="hierarchy-example">
+                        <div class="h-level h1">H1<br>Section Title<br>Bold 16px</div>
+                        <div class="h-level h2">H2<br>Field Label<br>Bold 12px</div>
+                        <div class="h-level h3">H3<br>Field Value<br>Regular 13px</div>
+                        <div class="h-level h4">H4<br>Feedback<br>Regular 11px</div>
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <strong>Color Semántico:</strong><br>
+                    ✓ Verde (#28a745) = Válido, guardado<br>
+                    ⚠ Amarillo (#ff9800) = Advertencia, requerido<br>
+                    ✗ Rojo (#dc3545) = Error<br>
+                    ● Azul (#003366) = Activo, en curso
+                </div>
+            </div>
+        </div>
+        
+        <!-- VALIDACIÓN -->
+        <div class="section-group">
+            <div class="section-header">4. VALIDACIÓN EN TIEMPO REAL (Nielsen #4, #9)</div>
+            <div class="section-content">
+                <div class="gestalt">
+                    <strong>MEJORA:</strong> Cambiar de validación onBlur (lenta) a onChange (tiempo real)
+                </div>
+                
+                <div class="subsection">
+                    <div class="subsection-title">Flujo Actual (LENTO)</div>
+                    <div class="validation-flow">
+                        User escribe → onBlur → Validar → Guardar → UI actualiza
+                        <br><span style="color: #999;">⏱ Retardo: usuario espera confirmación</span>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <div class="subsection-title">Flujo Propuesto (RÁPIDO)</div>
+                    <div class="validation-flow">
+                        User escribe → onChange → Validar INLINE → UI feedback<br>
+                        ↓ (después 1s) → Auto-guardar
+                        <br><span style="color: #28a745;">✓ Feedback inmediato + Auto-save</span>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <div class="subsection-title">Estados de Campo</div>
+                    <div class="box">
+                        <div class="step-flow">✓ VÁLIDO: Border verde + ícono check + "Guardado hace X"</div>
+                        <div class="step-flow">⚠ REQUERIDO: Border amarillo + ícono warning + "Complete este campo"</div>
+                        <div class="step-flow">✗ ERROR: Border rojo + ícono error + mensaje específico</div>
+                        <div class="step-flow">○ NEUTRAL: Border gris + sin ícono (sin validación aún)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODAL ELIMINACIÓN -->
+        <div class="section-group">
+            <div class="section-header">5. MODAL ROBUSTO DE ELIMINACIÓN (Nielsen #10, #4)</div>
+            <div class="section-content">
+                <div class="gestalt">
+                    <strong>MEJORA:</strong> Modal con descripción de impacto + confirmación clara
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.6); padding: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 280px;">
+                    <div style="background: white; border-radius: 8px; padding: 25px; max-width: 450px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); text-align: left;">
+                        <h2 style="color: #dc3545; margin-bottom: 15px; font-size: 18px;">¿Eliminar Tarea?</h2>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                            <strong>Elemento:</strong> "El usuario intenta buscar un producto"
+                        </p>
+                        <p style="color: #999; font-size: 13px; margin-bottom: 20px; line-height: 1.6;">
+                            ⚠ <strong>Advertencia:</strong> Esta acción no se puede deshacer. Se eliminarán también los registros de observaciones asociados.
+                        </p>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button style="padding: 10px 20px; border: 1px solid #ddd; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                            <button style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Eliminar Permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="note" style="margin-top: 20px;">
+                    <strong>Elementos del Modal:</strong><br>
+                    • Título descriptivo (rojo = peligro)<br>
+                    • Contexto: Nombre/descripción del elemento<br>
+                    • Advertencia clara del impacto<br>
+                    • Botones: Cancelar (neutral) + Eliminar (rojo/peligro)<br>
+                    • NO permitir doble-click accidental
+                </div>
+            </div>
+        </div>
+        
+        <!-- MAPEO A CÓDIGO -->
+        <div class="section-group">
+            <div class="section-header">6. MAPEO A CÓDIGO REACT</div>
+            <div class="section-content">
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                    <tr style="background: #f0f0f0; border-bottom: 1px solid #ddd;">
+                        <th style="padding: 12px; text-align: left; font-weight: bold;">Componente</th>
+                        <th style="padding: 12px; text-align: left; font-weight: bold;">Archivo</th>
+                        <th style="padding: 12px; text-align: left; font-weight: bold;">Mejora</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">Breadcrumbs</td>
+                        <td style="padding: 12px;">src/components/Breadcrumbs.tsx</td>
+                        <td style="padding: 12px;">✓ YA EXISTE</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">FlowProgress</td>
+                        <td style="padding: 12px;">src/components/FlowProgress.tsx</td>
+                        <td style="padding: 12px;">✓ YA EXISTE</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">TabNavigation</td>
+                        <td style="padding: 12px;">src/components/TabNavigation.tsx</td>
+                        <td style="padding: 12px;">✓ YA EXISTE</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">PlanView (Validación)</td>
+                        <td style="padding: 12px;">src/views/PlanView.tsx:72-77</td>
+                        <td style="padding: 12px;">❌ REFACTOR onChange</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px;">ConfirmDeleteModal</td>
+                        <td style="padding: 12px;">src/components/ConfirmDeleteModal.tsx</td>
+                        <td style="padding: 12px;">❌ CREAR NUEVO</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

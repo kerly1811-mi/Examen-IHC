@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Hi-Fi - PlanView Implementado</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; color: #1a1a1a; font-size: 28px; }
+        .dashboard { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; }
+        .nav-sticky { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 3px solid #003366; padding: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .breadcrumb { display: flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 12px; color: #666; border-bottom: 1px solid #e0e0e0; }
+        .breadcrumb a { color: #0066cc; cursor: pointer; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-current { color: #003366; font-weight: bold; }
+        .flow-progress { padding: 16px 20px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; }
+        .progress-label { font-weight: bold; color: #666; text-transform: uppercase; }
+        .progress-percent { font-weight: bold; color: #003366; }
+        .progress-bar { width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #003366, #0066cc); width: 60%; border-radius: 3px; }
+        .steps-container { display: flex; align-items: center; gap: 8px; }
+        .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+        .step-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-bottom: 6px; color: white; font-size: 13px; background: #d0d0d0; color: #666; }
+        .step.active .step-circle { background: #003366; transform: scale(1.15); }
+        .step.completed .step-circle { background: #28a745; }
+        .step-label { font-size: 11px; font-weight: 600; color: #666; text-align: center; }
+        .step.active .step-label { color: #003366; font-weight: 700; }
+        .step-connector { flex: 1; height: 2px; background: #d0d0d0; margin: 0 4px 16px 4px; }
+        .step.completed ~ .step-connector { background: #28a745; }
+        .tabs { display: flex; border-bottom: 1px solid #e0e0e0; background: white; padding: 0 20px; gap: 0; }
+        .tab { padding: 14px 16px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #666; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .tab:hover { color: #0066cc; }
+        .tab.active { color: white; background: #003366; border-bottom-color: #003366; }
+        .save-button { margin-left: auto; padding: 10px 20px; background: #0066cc; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .save-button:hover { background: #005199; }
+        .content { padding: 30px 40px; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+        .form-group { margin-bottom: 20px; }
+        .form-field { margin-bottom: 14px; }
+        .field-label { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #333; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .required { color: #dc3545; }
+        .field-input { width: 100%; padding: 10px 12px; border: 1px solid #bbb; border-radius: 6px; font-size: 13px; font-family: inherit; background: #f9f9f9; transition: all 0.2s; }
+        .field-input:focus { background: white; border-color: #0066cc; outline: none; box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1); }
+        .field-input.valid { border-color: #28a745; background: #f1f8f4; }
+        .field-feedback { display: flex; align-items: center; gap: 4px; font-size: 11px; margin-top: 4px; }
+        .feedback-valid { color: #28a745; }
+        .feedback-warning { color: #ff9800; }
+        .feedback-icon { font-size: 12px; }
+        .char-counter { font-size: 10px; color: #999; text-align: right; margin-top: 2px; }
+        .task-card { background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+        .task-header { background: #003366; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
+        .task-status { font-size: 11px; opacity: 0.9; }
+        .task-delete { cursor: pointer; font-size: 16px; opacity: 0.7; transition: opacity 0.2s; }
+        .task-delete:hover { opacity: 1; }
+        .task-body { padding: 16px; }
+        .button-group { display: flex; gap: 12px; margin-top: 30px; justify-content: flex-end; }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-primary { background: #0066cc; color: white; }
+        .btn-primary:hover { background: #005199; }
+        .timestamp { font-size: 11px; color: #28a745; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 20px 0; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        
+        <div class="dashboard">
+            <!-- NAVEGACIÓN STICKY -->
+            <div class="nav-sticky">
+                <!-- Breadcrumbs -->
+                <div class="breadcrumb">
+                    <span>🏠</span>
+                    <a>Inicio</a>
+                    <span>›</span>
+                    <a>Mis Planes</a>
+                    <span>›</span>
+                    <span class="breadcrumb-current">Test Usabilidad V3</span>
+                </div>
+                
+                <!-- Flow Progress -->
+                <div class="flow-progress">
+                    <div class="progress-header">
+                        <span class="progress-label">Progreso del Plan</span>
+                        <span class="progress-percent">3 de 5 · 60%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="steps-container">
+                        <div class="step completed">
+                            <div class="step-circle">✓</div>
+                            <div class="step-label">Plan</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        
+                        <div class="step active">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Guion</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        
+                        <div class="step">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Observaciones</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        
+                        <div class="step">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Hallazgos</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        
+                        <div class="step">
+                            <div class="step-circle">5</div>
+                            <div class="step-label">Reportes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active">📋 Plan de Prueba</button>
+                    <button class="tab">📄 Guion y Tareas</button>
+                    <button class="tab">🔍 Observaciones</button>
+                    <button class="tab">📊 Hallazgos</button>
+                    <button class="tab">📈 Reportes</button>
+                    <button class="save-button">💾 Guardar</button>
+                </div>
+            </div>
+            
+            <!-- CONTENIDO -->
+            <div class="content">
+                <!-- Sección: Información del Plan -->
+                <div class="section">
+                    <div class="section-title">📋 Información del Plan</div>
+                    
+                    <div class="form-field">
+                        <div class="field-label">
+                            Producto <span class="required">*</span>
+                        </div>
+                        <input type="text" class="field-input valid" value="Dashboard Usabilidad" placeholder="Ej: Dashboard">
+                        <div class="field-feedback feedback-valid">
+                            <span class="feedback-icon">✓</span> Válido
+                        </div>
+                        <div class="timestamp">
+                            <span>✓</span> Guardado hace 30 segundos
+                        </div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <div class="field-label">
+                            Objetivo <span class="required">*</span>
+                        </div>
+                        <input type="text" class="field-input" placeholder="Ej: Evaluar usabilidad del dashboard">
+                        <div class="field-feedback feedback-warning">
+                            <span class="feedback-icon">⚠</span> Campo requerido
+                        </div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <div class="field-label">Moderador</div>
+                        <input type="text" class="field-input valid" value="Kerly Chicaiza" placeholder="Nombre del moderador">
+                        <div class="field-feedback feedback-valid">
+                            <span class="feedback-icon">✓</span> Válido
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sección: Tareas (Script) -->
+                <div class="section">
+                    <div class="section-title">✓ Tareas (Guion y Tareas)</div>
+                    
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div>
+                                <strong>Tarea 1</strong> <span class="task-status">(●) En Curso</span>
+                            </div>
+                            <div class="task-delete" title="Eliminar esta tarea">🗑</div>
+                        </div>
+                        <div class="task-body">
+                            <div class="form-field">
+                                <div class="field-label">
+                                    Escenario/Tarea <span class="required">*</span>
+                                    <span style="font-weight: normal; margin-left: auto;">(95/200)</span>
+                                </div>
+                                <input type="text" class="field-input valid" value="El usuario intenta buscar un producto en el dashboard" placeholder="Ej: Buscar producto">
+                                <div class="field-feedback feedback-valid">
+                                    <span class="feedback-icon">✓</span> Válido | Validación en tiempo real
+                                </div>
+                                <div class="char-counter">95 de 200 caracteres</div>
+                            </div>
+                            
+                            <div class="form-field">
+                                <div class="field-label">Resultado Esperado</div>
+                                <input type="text" class="field-input valid" placeholder="Ej: Usuario llega a resultados">
+                                <div class="field-feedback feedback-valid">
+                                    <span class="feedback-icon">✓</span> Válido
+                                </div>
+                            </div>
+                            
+                            <div class="timestamp">
+                                <span>✓</span> Guardado hace 1 minuto
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div>
+                                <strong>Tarea 2</strong> <span class="task-status">(○) Pendiente</span>
+                            </div>
+                            <div class="task-delete" title="Eliminar esta tarea">🗑</div>
+                        </div>
+                        <div class="task-body">
+                            <div class="form-field">
+                                <div class="field-label">
+                                    Escenario/Tarea <span class="required">*</span>
+                                    <span style="font-weight: normal; margin-left: auto;">(0/200)</span>
+                                </div>
+                                <input type="text" class="field-input" placeholder="Ej: Agregar nuevo campo">
+                                <div class="field-feedback feedback-warning">
+                                    <span class="feedback-icon">⚠</span> Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="annotation">
+                    <strong>✓ Mejoras implementadas:</strong> Validación en tiempo real, timestamps de guardado, modal robusto de eliminación, tooltips en botones, contador de caracteres, estados visuales claros (●✓⚠○).
+                </div>
+                
+                <!-- Botones de Acción -->
+                <div class="button-group">
+                    <button class="btn btn-secondary">← Atrás</button>
+                    <button class="btn btn-success">+ Agregar Tarea</button>
+                    <button class="btn btn-primary">Siguiente →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
